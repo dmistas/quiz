@@ -20,16 +20,14 @@ class BaseQuizTest extends TestCase
         $this->quizDTO = $this->makeQuizDTO();
         $this->answersDTO = $this->makeAnswersDTO();
     }
-    
+
     public function testBasicTest()
     {
-        $quiz = $this->makeQuizDTO();
-
         $quizResultService = new QuizResultService(
             $this->quizDTO,
             $this->answersDTO
         );
-        
+
         $result = $quizResultService->getResult();
 
         $this->assertEquals(0.50, $result);
