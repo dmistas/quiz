@@ -2,85 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreQuizRequest;
-use App\Http\Requests\UpdateQuizRequest;
+use App\Http\Requests\QuizRequest;
 use App\Models\Quiz;
+use App\Service\MakeAnswersDtoService;
+use App\Service\MakeQuizDtoService;
+use App\Service\QuizResultService;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class QuizController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        return Quiz::with(['questions', 'questions.choices'])->get();
+        return view('quiz.index', ['quizzes' => Quiz::with(['questions', 'questions.choices'])->get()]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function show(Quiz $quiz): view
     {
-        //
+        $quiz->load(['questions', 'questions.choices']);
+        return view('quiz.show', compact('quiz'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreQuizRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreQuizRequest $request)
+    public function getResult(QuizRequest $request, Quiz $quiz)
     {
-        //
-    }
+        $formattedQuestions = [];
+        foreach($request->questions as $item) {
+            foreach ($item as $key => $item2){
+                $formattedQuestions[$key][] = $item2;
+            }
+        }
+        $quizDTO = (new MakeQuizDtoService($quiz->load(['questions', 'questions.choices'])))->getQuizDTO();
+        $answerDTO = (new MakeAnswersDtoService($request->quiz_uuid, $formattedQuestions))->getAnswersDTO();
+        $result = (new QuizResultService($quizDTO, $answerDTO))->getResult() * 100;
+        return view('quiz.result', compact('result'));
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Quiz  $quize
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Quiz $quize)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Quiz  $quize
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Quiz $quize)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateQuizRequest  $request
-     * @param  \App\Models\Quiz  $quize
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateQuizRequest $request, Quiz $quize)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Quiz  $quize
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Quiz $quize)
-    {
-        //
     }
 }
