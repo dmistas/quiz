@@ -27,4 +27,15 @@ class QuizRequest extends FormRequest
             'questions' => ['required', 'array'],
         ];
     }
+
+    public function formattedQuestions()
+    {
+        $formattedQuestions = [];
+        foreach($this->questions as $item) {
+            foreach ($item as $key => $item2){
+                $formattedQuestions[$key][] = $item2;
+            }
+        }
+        return $formattedQuestions;
+    }
 }
