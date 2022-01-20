@@ -52,6 +52,6 @@ class QuizResultService
             $result = true;
             break;
         }
-        return $result;
+        return round($result, 2);
     }
 }
