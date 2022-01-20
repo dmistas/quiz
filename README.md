@@ -7,7 +7,11 @@
 ```sh
 docker-compose up -d
 ```
-
+После запуска приложения выполнить
+```sh
+docker-compose exec app php artisan migrate
+docker-compose exec app php artisan DB:seed
+```
 Чтобы  выполнить тесты
 ```sh
 docker-compose exec app php artisan test
