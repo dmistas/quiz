@@ -2,14 +2,10 @@
 
 namespace App\Service;
 
-use App\DTO\QuizDTO;
-use App\DTO\QuestionDTO;
-use App\DTO\ChoiceDTO;
 use App\DTO\AnswersDTO;
-use App\DTO\AnswerDTO;
-
-use Exception;
-use phpDocumentor\Reflection\Types\Boolean;
+use App\DTO\ChoiceDTO;
+use App\DTO\QuestionDTO;
+use App\DTO\QuizDTO;
 
 class QuizResultService
 {
@@ -50,7 +46,7 @@ class QuizResultService
             if ($correctAnswers->count() !== count($answer->getСhoices())) {
                 break;
             }
-            if (!$correctAnswers->diff($answer->getСhoices())->count()) {
+            if ($correctAnswers->diff($answer->getСhoices())->count()) {
                 break;
             }
             $result = true;
